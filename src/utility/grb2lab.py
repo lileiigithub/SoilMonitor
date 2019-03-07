@@ -23,15 +23,15 @@ class Rgb2lab:
         print("b:", self.b)
 
     def saveLabImgs(self,_save_path):
-        pathL = os.path.join(_save_path, self.img_name_.split(".")[0] + "_l"  + ".png")
-        patha = os.path.join(_save_path, self.img_name_.split(".")[0] + "_a"  + ".png")
-        pathb = os.path.join(_save_path, self.img_name_.split(".")[0] + "_b" + ".png")
+        pathL = os.path.join(_save_path, self.img_name_.split(".")[0] + "_l"  + ".jpg")
+        patha = os.path.join(_save_path, self.img_name_.split(".")[0] + "_a"  + ".jpg")
+        pathb = os.path.join(_save_path, self.img_name_.split(".")[0] + "_b" + ".jpg")
         cv2.imwrite(pathL, self.L)
         cv2.imwrite(patha, self.a)
         cv2.imwrite(pathb, self.b)
 
 if __name__ == '__main__':
-    PATH = "tmpImg/4_1.png"
+    PATH = "data/LabImage/1.jpg"
     obj = Rgb2lab(PATH)
-    obj.saveLabImgs("tmpImg")
+    obj.saveLabImgs("data/LabImage")
 
