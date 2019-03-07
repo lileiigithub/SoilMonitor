@@ -6,11 +6,11 @@
 #############################################################################
 
 from threading import Thread
-from src.globaldata import Data
-from src.network import Network
 from PyQt5.QtCore import QObject,pyqtSignal
 import time
-from src.imgrecognition import RecognitionAlgorithm
+from globaldata import Data
+from network import Network
+from imgrecognition import RecognitionAlgorithm
 
 class ReceiceImg(Thread,QObject):
     isHandled = True # 是否已经处理接收到的图片

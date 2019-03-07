@@ -6,3 +6,4 @@ src/monitor/model/
 src/utility/data/
 src/utility/__pycache__/
 src/utility/.ipynb_checkpoints/
+*.pyc

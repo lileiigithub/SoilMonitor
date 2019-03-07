@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from src.soildetector import Detector
-from src.preprocess import PreprocessImg
-from src.classification import Classification
+from soildetector import Detector
+from preprocess import PreprocessImg
+from classification import Classification
 import time
-from src.globaldata import Data
+from globaldata import Data
 #############################################################################
 ## 图片识别算法,包括: 土壤检测,图片处理,图片分类 三部分
 ## 输入: 图片cv2的numpy数组

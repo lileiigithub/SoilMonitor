@@ -12,14 +12,16 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QMainWindow,QLa
                              QMessageBox, QTextEdit, QGraphicsView, QTextBrowser, QGraphicsScene,QHBoxLayout,QVBoxLayout)
 from PyQt5 import QtWidgets
 from datetime import datetime
-from src.networkset import NetworkDialog
-from src.imgrecognition import RecognitionAlgorithm
-from src.globaldata import Data
-from src.thread import ReceiceImg
 import cv2
 import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')
+
+from networkset import NetworkDialog
+from imgrecognition import RecognitionAlgorithm
+from globaldata import Data
+from thread import ReceiceImg
+
 # 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中 FigureCanvas继承自QtWidgets.QWidget)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
