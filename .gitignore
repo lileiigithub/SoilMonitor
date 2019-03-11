@@ -7,3 +7,5 @@ src/utility/data/
 src/utility/__pycache__/
 src/utility/.ipynb_checkpoints/
 *.pyc
+*.o
+src/luvcview/ToDo
