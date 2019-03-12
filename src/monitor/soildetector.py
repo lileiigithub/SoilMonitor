@@ -54,8 +54,8 @@ class Detector(object):
         del classes[soil_class]
         img_shape = self.rgb_arr_3d.shape
         img_arr_3d_flatten = self.rgb_arr_3d.reshape(-1,3) # (r,g,b)
-        img_arr_3d_flatten[_y_predict == classes[0]] = [225]
-        img_arr_3d_flatten[_y_predict == classes[1]] = [225]
+        img_arr_3d_flatten[_y_predict == classes[0]] = [255]
+        img_arr_3d_flatten[_y_predict == classes[1]] = [255]
         self.processed_rgb_arr_3d = img_arr_3d_flatten.reshape(img_shape)
         # Data.processed_img_arr = self.processed_rgb_arr_3d
         return self.processed_rgb_arr_3d

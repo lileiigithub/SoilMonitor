@@ -3,20 +3,16 @@
 摄像头常开
 '''
 from socket import *
-import os
 import time
-
 import cv2
 from cv2 import VideoCapture
-
-import numpy as np
-from PIL import Image  
 import os
 import struct
 from threading import Thread
 
 def take_photoes():
     while True:
+        cap = VideoCapture(0)
         ret, frame = cap.read()
         # Our operations on the frame come here
         # Display the resulting frame

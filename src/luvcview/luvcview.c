@@ -470,6 +470,7 @@ int main(int argc, char *argv[])
     
     printf("begin  of control!\n");
 	struct v4l2_control control_s,constrol_get;
+	
 	// set whiite balance
     control_s.id = V4L2_CID_AUTO_WHITE_BALANCE;
 	control_s.value= 0;

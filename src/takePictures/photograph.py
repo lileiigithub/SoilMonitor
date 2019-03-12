@@ -22,8 +22,8 @@ def time_as_name():
 
 if __name__ == '__main__':
     cap = VideoCapture(0)
-    cap.set(3,2048)
-    cap.set(4,1536)
+    cap.set(3,800)
+    cap.set(4,600)
     # cap.set(3,1600)
     # cap.set(4,1200)
     take_photoes("new")

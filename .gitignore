@@ -9,3 +9,4 @@ src/utility/.ipynb_checkpoints/
 *.pyc
 *.o
 src/luvcview/ToDo
+src/utility/test
