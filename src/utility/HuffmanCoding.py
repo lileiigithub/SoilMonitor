@@ -177,16 +177,19 @@ if __name__ == '__main__':
     # arr = np.random.randint(0, 255, nums)
     # arr[0:int(nums*0.2)] = 0
     # print(arr)
+    import time
+    time0 = time.time()
     import cv2
     img_src = "data/freqStatics/1p.jpg"
     img_arr = cv2.imread(img_src)
     img_arr = img_arr.flatten()
     huffman_info = huffman_encode(img_arr)
+    print(time.time() - time0)
     path = 'test'
     f = open(path, 'wb')
     huffman_store(f, huffman_info)
     f.close()
-
+    # print(time.time()-time0)
     # f1 = open(path, 'rb')
     # huffman_info_ = huffman_restore(f1)
     # original_arr = huffman_decode(huffman_info_)
