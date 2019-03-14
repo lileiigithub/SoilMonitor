@@ -41,30 +41,25 @@ class MainWindow(QMainWindow):
         self.statusBar()
 
         #主界面
-        self.img_label = QLabel("原始土壤图片")
+        self.img_label = QLabel("原始岩土图像")
         self.img_label.setAlignment(Qt.AlignCenter) # label 居中
         self.img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
         self.raw_img_view = QGraphicsView()
 
-        self.pro_img_label = QLabel("处理后土壤图片")
+        self.pro_img_label = QLabel("图像分割后岩土图像")
         self.pro_img_label.setAlignment(Qt.AlignCenter) # label 居中
         self.pro_img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
         self.pro_img_view = QGraphicsView()
 
-        self.chooseImgButton = QPushButton("选取图片")
+        self.chooseImgButton = QPushButton("检测本地图像")
         self.onlineButton = QPushButton("在线检测")
 
-        self.grayHistogram_label = QLabel("分类说明")
+        self.grayHistogram_label = QLabel("聚类后图像")
         self.grayHistogram_label.setAlignment(Qt.AlignCenter) # label 居中
         self.grayHistogram_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
-        self.gray_Hist_view = QTextBrowser()
-        self.gray_Hist_view.setReadOnly(True)
-        self.gray_Hist_view.setFont(QFont("Roman times", 12))
-        information = "类别  ：    湿度\n"+"类别0： 0%-2.5%\n"+"类别1： 2.5%-7.5%\n"+"类别2： 7.5%-12.5%\n"+"类别3： 12.5%-17.5%\n"+"类别4： 17.5%-22.5%\n"+"类别5： 22.5%及以上\n"
+        self.clustered_img_view = QGraphicsView()
 
-        self.gray_Hist_view.setText(information)
-
-        self.text_label = QLabel("湿度识别结果")
+        self.text_label = QLabel("湿度检测结果")
         self.text_label.setAlignment(Qt.AlignCenter) # label 居中
         self.text_label.setFont(QFont("Roman times", 12))
         self.result_text = QTextBrowser()
@@ -86,7 +81,7 @@ class MainWindow(QMainWindow):
 
         right_layout = QVBoxLayout()
         right_layout.addWidget(self.grayHistogram_label)
-        right_layout.addWidget(self.gray_Hist_view)
+        right_layout.addWidget(self.clustered_img_view)
         right_layout.addWidget(self.text_label)
         right_layout.addWidget(self.result_text)
         right_layout.addWidget(self.hide_button)
@@ -95,7 +90,7 @@ class MainWindow(QMainWindow):
         mainlayout.addLayout(right_layout)
         self.widget.setLayout(mainlayout)
         #
-        self.setWindowTitle("土壤含水量在线检测上位机")
+        self.setWindowTitle("岩土湿度在线检测系统上位机")
         self.setGeometry(250,100,1080,820) # posx,posy,w,h
 
         self.chooseImgButton.clicked.connect(self.clicked_local_button) # 更新各种信息
@@ -124,7 +119,10 @@ class MainWindow(QMainWindow):
             self.loadFile(action.data())
 
     def about(self):
-        QMessageBox.about(self, "soil monitor","土壤含水量在线检测系统上位机 ")
+        information = "类别  ：    湿度\n" + "类别0： 0%-2.5%\n" + "类别1： 2.5%-7.5%\n" + "类别2： 7.5%-12.5%\n" \
+                      + "类别3： 12.5%-17.5%\n" + "类别4： 17.5%-22.5%\n" + "类别5： 22.5%及以上\n"
+        # QMessageBox.setFont(QFont("Roman times", 10))
+        QMessageBox.about(self, "soil monitor","岩土湿度在线检测系统上位机 \n"+information)
 
     def cameraSetDialog(self):
         pass
@@ -137,6 +135,7 @@ class MainWindow(QMainWindow):
     def online_show_analysis_calculate_image(self):
         self.showImageArray(Data.raw_img_arr,self.raw_img_view)
         self.showImageArray(Data.processed_img_arr, self.pro_img_view)
+        self.showImageArray(Data.processed_img_arr, self.clustered_img_view)
         self.show_result()
         # QApplication.processEvents()
         ReceiceImg.isHandled = True  # 标记已处理图片,可以开启新的接收
