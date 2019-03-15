@@ -98,7 +98,7 @@ class Detector(object):
         img_path = os.path.join(PATH, img_name)
         return img_path
 
-    def save_pro_img(self,_path = "temp/pro_img.jpg"):
+    def save_segmented_img(self,_path):
         # 保存图片到硬盘
         cv2.imwrite(_path, self.processed_rgb_arr_3d)
 

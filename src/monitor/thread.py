@@ -8,9 +8,9 @@
 from threading import Thread
 from PyQt5.QtCore import QObject,pyqtSignal
 import time
-from globaldata import Data
+from globalData import Data
 from network import Network
-from imgrecognition import RecognitionAlgorithm
+from imgRecognition import RecognitionAlgorithm
 
 class ReceiceImg(Thread,QObject):
     isHandled = True # 是否已经处理接收到的图片
@@ -35,8 +35,6 @@ class ReceiceImg(Thread,QObject):
                     if ReceiceImg.isHandled==True:
                         self.net.send_a_message()
                         self.net.receice_a_message()
-                        # Data.raw_img_path = Network.ImgName
-                        Data.raw_img_arr = Network.raw_img_arr  # 将网络接收的数据放入Data类属性
                         Data.raw_img_arr.flags.writeable = True
                         # ReceiceImg.isReceived = True
                         self.svm_algorithm() # 在多线程里调用算法
@@ -45,21 +43,21 @@ class ReceiceImg(Thread,QObject):
                         self.receivedSignal.emit()
                         # self.conn
                 except Exception as e:
-                    print("多线程错误,错误原因:\n", e)
+                    print("在线检测多线程错误,错误原因:\n", e)
 
         else:  # 离线检测
             while True:
                 try:
                     if ReceiceImg.isHandled==True:
-                        self.svm_algorithm() # 在多线程里调用算法
+                        self.recognition_algorithm() # 在多线程里调用算法
                         ReceiceImg.isHandled = False
                         self.receivedSignal.emit()
                 except Exception as e:
-                    print("多线程错误,错误原因:\n", e)
+                    print("离线检测多线程错误,错误原因:\n", e)
 
-    def svm_algorithm(self):
+    def recognition_algorithm(self):
         # 预测图片的类别算法
         # 包含 图片处理 土壤检测 类别预测
         reg = RecognitionAlgorithm(Data.raw_img_arr)
-        Data.predicted_classification = reg.implement()
+        reg.implement()
         Data.algorithm_used_time = reg.used_time

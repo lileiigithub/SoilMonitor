@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import (QApplication, QCheckBox, QDialog,
         QDialogButtonBox, QGridLayout, QHBoxLayout, QLabel, QLayout, QLineEdit,
         QPushButton, QVBoxLayout, QWidget)
 from socket import *
-from globaldata import Data
+from globalData import Data
 
 class NetworkDialog(QDialog):
     def __init__(self, parent=None):

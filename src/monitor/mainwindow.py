@@ -19,8 +19,8 @@ matplotlib.use('Qt5Agg')
 
 from networkset import NetworkDialog
 from denoiseSet import DenoiseDialog
-from imgrecognition import RecognitionAlgorithm
-from globaldata import Data
+from imgRecognition import RecognitionAlgorithm
+from globalData import Data
 from thread import ReceiceImg
 
 import sys
