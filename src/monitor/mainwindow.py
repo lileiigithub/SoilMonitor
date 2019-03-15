@@ -23,6 +23,9 @@ from imgrecognition import RecognitionAlgorithm
 from globaldata import Data
 from thread import ReceiceImg
 
+import sys
+print(sys.path)
+
 # 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中 FigureCanvas继承自QtWidgets.QWidget)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 

@@ -13,17 +13,13 @@ class DenoiseDialog(QDialog):
     def __init__(self, parent=None):
         super(DenoiseDialog, self).__init__(parent)
 
-        self.ip_label = QLabel("IP地址:")
-        self.ip_lineEdit = QLineEdit()
-        ip_layout = QHBoxLayout()
-        ip_layout.addWidget(self.ip_label)
-        ip_layout.addWidget(self.ip_lineEdit)
-
-        self.port_label = QLabel("端口号:")
-        self.port_lineEdit = QLineEdit()
-        port_layout = QHBoxLayout()
-        port_layout.addWidget(self.port_label)
-        port_layout.addWidget(self.port_lineEdit)
+        filter_layout = QVBoxLayout()
+        self.filter1 = QCheckBox("均值滤波")
+        self.filter2 = QCheckBox("中值滤波")
+        self.filter3 = QCheckBox("高斯低通滤波")
+        filter_layout.addWidget(self.filter1)
+        filter_layout.addWidget(self.filter2)
+        filter_layout.addWidget(self.filter3)
 
         self.YesButton = QPushButton("确定")
         self.NoButton = QPushButton("取消")
@@ -34,13 +30,12 @@ class DenoiseDialog(QDialog):
         # 主布局
         mainLayout = QVBoxLayout()
         # mainLayout.setSizeConstraint(QLayout.SetFixedSize)
-        mainLayout.addLayout(ip_layout)
-        mainLayout.addLayout(port_layout)
+        mainLayout.addLayout(filter_layout)
         mainLayout.addLayout(YN_layout)
 
         # mainLayout.setRowStretch(2, 1)
         self.setLayout(mainLayout)
-        self.setWindowTitle("network setting")
+        self.setWindowTitle("滤波设置")
         self.resize(250,200)
         self.NoButton.clicked.connect(self.cancel)
         self.YesButton.clicked.connect(self.ok) # 连接信号与槽
@@ -50,7 +45,7 @@ class DenoiseDialog(QDialog):
         port = self.port_lineEdit.text()
         if port!="" and ip !="":
             Data.address = (ip,int(port))
-            print("设置新网络连接：",Data.address)
+            print("设置滤波算法：",Data.address)
         self.close()
         # return self.address
 
@@ -67,6 +62,6 @@ if __name__ == '__main__':
 
     import sys
     app = QApplication(sys.argv)
-    dialog = NetworkDialog()
+    dialog = DenoiseDialog()
     dialog.show()
     sys.exit(app.exec_())
