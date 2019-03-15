@@ -7,6 +7,9 @@ from sklearn.cluster import DBSCAN
 from sklearn import metrics
 import numpy as np
 import os
+import collections
+from log import logger
+
 import time
 time1 = time.time()
 
@@ -17,6 +20,8 @@ class Dbscan_segmention(object):
         self.img_width = self.img_shape[0]
         self.img_length = self.img_shape[1]
         self.labels = []
+        self.soil_label = -1  #
+
         self.n_clusters_ = 0
         self.lab_arr = cv2.cvtColor(self.gbr_arr, cv2.COLOR_BGR2LAB)
 
@@ -33,21 +38,23 @@ class Dbscan_segmention(object):
         db = DBSCAN(eps=EPS, min_samples=MINPTS).fit(X)
         # core_samples_mask = np.zeros_like(db.labels_, dtype=bool)
         # core_samples_mask[db.core_sample_indices_] = True
-        self.labels = db.labels_
 
-        print(self.labels)
+        self.labels = db.labels_
+        labels_count = collections.Counter(self.labels.flatten())
+        logger.info("聚类labels结果:%s", labels_count)
+        self.soil_label = labels_count.most_common(1)[0][0]  # 找到标签最多的类
+        logger.info("soil label:%s", self.soil_label)
         self.n_clusters_ = len(set(self.labels)) - (1 if -1 in self.labels else 0)
-        # print("labels:",self.labels)
-        # print("n_clusters:",self.n_clusters_)
         for i in range(self.n_clusters_):
             amount_clusting.append(len(self.labels[self.labels[:] == i]))
             mean_of_cluster = [np.mean(X[self.labels == i][:, 0]), np.mean(X[self.labels == i][:, 1]), np.mean(X[self.labels == i][:, 2])]
+            if i==self.soil_label:
+                soil_mean_of_cluster =  mean_of_cluster
             mean.append(mean_of_cluster)
-            print(i, ":","mean: ","[",round(mean_of_cluster[0],2),round(mean_of_cluster[1],2),round(mean_of_cluster[2],2),"]")
-            # print(i,":",mean)
+            logger.info("%s :聚类中心：%s",i,mean_of_cluster)
         ratio = len(self.labels[self.labels[:] == -1]) / len(self.labels)
-        print("noise ratio: ", ratio)
-        return mean_of_cluster  # 返回了最后一个聚类中心点，后期需要改为返回最大的类的中心点
+        logger.info("noise ratio: %s", ratio)
+        return soil_mean_of_cluster  # 返回了最后一个聚类中心点，后期需要改为返回最大的类的中心点
 
     def dbscan_claster_ab(self):
         # 将ab值聚类
@@ -75,11 +82,10 @@ class Dbscan_segmention(object):
         print("noise ratio: ", ratio)
 
     def save_segmented_imgs(self,_save_path):
-        for i in range(self.n_clusters_):
-            gbr_arr_flatten = self.gbr_arr.reshape(-1, 3)  # (r,g,b)
-            gbr_arr_flatten[self.labels != i] = [255]
-            clustered_arr_3d = gbr_arr_flatten.reshape(self.gbr_arr.shape)
-            cv2.imwrite(_save_path, clustered_arr_3d)
+        gbr_arr_flatten = self.gbr_arr.reshape(-1, 3)  # (r,g,b)
+        gbr_arr_flatten[self.labels != self.soil_label] = [255]
+        clustered_arr_3d = gbr_arr_flatten.reshape(self.gbr_arr.shape)
+        cv2.imwrite(_save_path, clustered_arr_3d)
 
 
 if __name__ == '__main__':
@@ -94,5 +100,5 @@ if __name__ == '__main__':
     save_path = "data/cluster/dbscan_test_c.png"
     db.save_segmented_imgs(save_path)
     time2 = time.time()
-    print('time:', time2 - time1)
+    logger.info('time:%s', time2 - time1)
 
