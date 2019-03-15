@@ -11,6 +11,7 @@ from sklearn.model_selection import StratifiedKFold
 from datetime import datetime
 import time
 import os
+from soilMonitorLog import SMLog
 
 class Detector(object):
     def __init__(self,_img_arr):
@@ -50,7 +51,7 @@ class Detector(object):
         classes = [0,1,2]  # 3个类别
         soil_class = self.get_soil_class()  # 减去土壤的类别
         #soil_class = 2
-        print("soil_class: ",soil_class)
+        SMLog.debug("土壤的高斯类: %s",soil_class)
         del classes[soil_class]
         img_shape = self.rgb_arr_3d.shape
         img_arr_3d_flatten = self.rgb_arr_3d.reshape(-1,3) # (r,g,b)

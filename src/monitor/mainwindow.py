@@ -22,9 +22,7 @@ from denoiseSet import DenoiseDialog
 from imgRecognition import RecognitionAlgorithm
 from globalData import Data
 from thread import ReceiceImg
-
-import sys
-print(sys.path)
+from soilMonitorLog import SMLog
 
 # 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中 FigureCanvas继承自QtWidgets.QWidget)
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -53,7 +51,7 @@ class MainWindow(QMainWindow):
         self.pro_img_label = QLabel("图像分割后岩土图像")
         self.pro_img_label.setAlignment(Qt.AlignCenter) # label 居中
         self.pro_img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
-        self.pro_img_view = QGraphicsView()
+        self.segmented_img_view = QGraphicsView()
 
         self.chooseImgButton = QPushButton("检测本地岩土图像")
         self.onlineButton = QPushButton("在线检测")
@@ -80,7 +78,7 @@ class MainWindow(QMainWindow):
         left_layout.addWidget(self.img_label)
         left_layout.addWidget(self.raw_img_view)
         left_layout.addWidget(self.pro_img_label)
-        left_layout.addWidget(self.pro_img_view)
+        left_layout.addWidget(self.segmented_img_view)
         left_layout.addLayout(leftDown_layout)
 
         right_layout = QVBoxLayout()
@@ -143,14 +141,15 @@ class MainWindow(QMainWindow):
 
     def online_show_analysis_calculate_image(self):
         self.showImageArray(Data.raw_img_arr,self.raw_img_view)
-        self.showImageArray(Data.processed_img_arr, self.pro_img_view)
-        self.showImageArray(Data.processed_img_arr, self.clustered_img_view)
+        self.showImageArray(Data.segmented_img_arr, self.segmented_img_view)
+        self.showImageArray(Data.clustered_img_arr, self.clustered_img_view)
         self.show_result()
         # QApplication.processEvents()
         ReceiceImg.isHandled = True  # 标记已处理图片,可以开启新的接收
 
     def local_show_analysis_calculate_image(self):
-        self.showImageArray(Data.processed_img_arr, self.pro_img_view)
+        self.showImageArray(Data.segmented_img_arr, self.segmented_img_view)
+        self.showImageArray(Data.clustered_img_arr, self.clustered_img_view)
         self.show_result()
 
     def clicked_local_button(self):
@@ -184,7 +183,7 @@ class MainWindow(QMainWindow):
                 "Choose an image file to open", img_path, "Images (*.*)")
         if imageFile != '':
             img_path = imageFile
-            print("img path: ",img_path)
+            SMLog.debug("img path: %s",img_path)
             # Data.raw_img_path = img_path
             Data.raw_img_arr = cv2.imread(img_path)
             return True
@@ -199,13 +198,6 @@ class MainWindow(QMainWindow):
         scene.clear()
         scene.addPixmap(pixmap)
         _QGraphicsView_obj.setScene(scene)
-
-    def showHistgram(self):
-        hist_data = Data.grayhist_img_arr
-        self.figure.clear()
-        ax = self.figure.add_axes([0.1, 0.1, 0.6, 0.6])
-        ax.hist(hist_data.ravel(), 256, [0, 256])
-        self.gray_Hist_canvas.draw()
 
 
     def showImageArray(self, _bgrimg, _QGraphicsView_obj):

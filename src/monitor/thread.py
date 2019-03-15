@@ -11,6 +11,7 @@ import time
 from globalData import Data
 from network import Network
 from imgRecognition import RecognitionAlgorithm
+from soilMonitorLog import SMLog
 
 class ReceiceImg(Thread,QObject):
     isHandled = True # 是否已经处理接收到的图片
@@ -25,7 +26,7 @@ class ReceiceImg(Thread,QObject):
             address = Data.address # 获取ip地址,端口
             self.net = Network()
             self.net.create_connnect(address)
-            print("创建并连接网络!")
+            SMLog.info("创建并连接网络!")
 
     def run(self):
         # 接收图片
@@ -37,13 +38,13 @@ class ReceiceImg(Thread,QObject):
                         self.net.receice_a_message()
                         Data.raw_img_arr.flags.writeable = True
                         # ReceiceImg.isReceived = True
-                        self.svm_algorithm() # 在多线程里调用算法
-                        time.sleep(4)
+                        self.recognition_algorithm() # 在多线程里调用算法
+                        # time.sleep(4)
                         ReceiceImg.isHandled = False
                         self.receivedSignal.emit()
                         # self.conn
                 except Exception as e:
-                    print("在线检测多线程错误,错误原因:\n", e)
+                    SMLog.error("在线检测多线程错误,错误原因:%s", e)
 
         else:  # 离线检测
             while True:
@@ -53,7 +54,7 @@ class ReceiceImg(Thread,QObject):
                         ReceiceImg.isHandled = False
                         self.receivedSignal.emit()
                 except Exception as e:
-                    print("离线检测多线程错误,错误原因:\n", e)
+                    SMLog.error("离线检测多线程错误,错误原因:%s", e)
 
     def recognition_algorithm(self):
         # 预测图片的类别算法
@@ -61,3 +62,4 @@ class ReceiceImg(Thread,QObject):
         reg = RecognitionAlgorithm(Data.raw_img_arr)
         reg.implement()
         Data.algorithm_used_time = reg.used_time
+        SMLog.info("图像算法总耗时(s)：%s", reg.used_time)

@@ -29,7 +29,6 @@ class Dbscan_cluster(object):
     def dbscan_cluster(self,_arr,_EPS = 4):
         # input: lab or rgb cluster; the EPS
         # output: the mean of cluster
-
         mean = []
         amount_clusting = []
         X = _arr.reshape(-1,3)  # 将数据拉平为 3维

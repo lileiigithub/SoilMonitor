@@ -9,6 +9,7 @@ from datetime import datetime
 import os
 from globalData import Data
 from soilMonitorLog import SMLog
+import cv2
 
 #############################################################################
 ## 图片识别算法,包括: 图像去噪、土壤图像分割、LAB转换、聚类
@@ -55,8 +56,8 @@ class RecognitionAlgorithm(object):
         # 区域聚类
         bgr_arr = bgr_arr[350:350+100, 250:250+100, :]   #  截取中心 100*100 区域聚类
         db = Dbscan_cluster(bgr_arr)
-        soil_mean = db.dbscan_cluster()
-        SMLog.info("%s :岩土聚类中心：%s", soil_mean)
+        soil_mean = db.dbscan_cluster(db.lab_arr)
+        SMLog.info("岩土聚类中心：%s", soil_mean)
         bgr_arr = db.clustered_arr()
         Data.clustered_img_arr = bgr_arr  # 保存到Data
         cv2.imwrite(self.clustered_img_path,bgr_arr)  # 保存图像

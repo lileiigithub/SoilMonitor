@@ -10,3 +10,4 @@ src/utility/.ipynb_checkpoints/
 *.o
 src/luvcview/ToDo
 src/utility/test
+src/monitor/soilMonitor.log
