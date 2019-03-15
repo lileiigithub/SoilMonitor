@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')
 
 from networkset import NetworkDialog
+from denoiseSet import DenoiseDialog
 from imgrecognition import RecognitionAlgorithm
 from globaldata import Data
 from thread import ReceiceImg
@@ -41,7 +42,7 @@ class MainWindow(QMainWindow):
         self.statusBar()
 
         #主界面
-        self.img_label = QLabel("原始岩土图像")
+        self.img_label = QLabel("接收的原始岩土图像")
         self.img_label.setAlignment(Qt.AlignCenter) # label 居中
         self.img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
         self.raw_img_view = QGraphicsView()
@@ -51,15 +52,15 @@ class MainWindow(QMainWindow):
         self.pro_img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
         self.pro_img_view = QGraphicsView()
 
-        self.chooseImgButton = QPushButton("检测本地图像")
+        self.chooseImgButton = QPushButton("检测本地岩土图像")
         self.onlineButton = QPushButton("在线检测")
 
-        self.grayHistogram_label = QLabel("聚类后图像")
+        self.grayHistogram_label = QLabel("聚类后岩土图像")
         self.grayHistogram_label.setAlignment(Qt.AlignCenter) # label 居中
         self.grayHistogram_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
         self.clustered_img_view = QGraphicsView()
 
-        self.text_label = QLabel("湿度检测结果")
+        self.text_label = QLabel("岩土湿度检测结果")
         self.text_label.setAlignment(Qt.AlignCenter) # label 居中
         self.text_label.setFont(QFont("Roman times", 12))
         self.result_text = QTextBrowser()
@@ -131,6 +132,11 @@ class MainWindow(QMainWindow):
         # 设置网络
         self.networkset = NetworkDialog()
         self.networkset.show()
+
+    def denoiseDialog(self):
+        # 设置去噪算法
+        self.denoiseSet = DenoiseDialog()
+        self.denoiseSet.show()
 
     def online_show_analysis_calculate_image(self):
         self.showImageArray(Data.raw_img_arr,self.raw_img_view)
@@ -243,13 +249,17 @@ class MainWindow(QMainWindow):
                                   statusTip="Show the Qt library's About box",
                                   triggered=QApplication.instance().aboutQt)
 
-        self.cameraSet = QAction("摄像头", self,
+        self.cameraSet = QAction("下位机摄像头设置", self,
                                  statusTip="设置摄像头参数",
                                  triggered=self.cameraSetDialog)
 
-        self.networkSet = QAction("网络", self,
+        self.networkSet = QAction("下位机ip地址设置", self,
                                  statusTip="设置网络连接",
                                  triggered=self.networkDialog)
+
+        self.denoiseSet = QAction("去噪算法选择", self,
+                                 statusTip="去噪算法选择",
+                                 triggered=self.denoiseDialog)
 
     def createMenus(self):
         # 创建菜单
@@ -265,6 +275,7 @@ class MainWindow(QMainWindow):
         self.setting = self.menuBar().addMenu("&设置")
         self.setting.addAction(self.cameraSet)
         self.setting.addAction(self.networkSet)
+        self.setting.addAction(self.denoiseSet)
 
         self.helpMenu = self.menuBar().addMenu("&帮助")
         self.helpMenu.addAction(self.aboutAct)
