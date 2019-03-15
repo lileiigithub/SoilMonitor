@@ -17,10 +17,11 @@ class DenoiseDialog(QDialog):
         self.filter1 = QCheckBox("均值滤波")
         self.filter2 = QCheckBox("中值滤波")
         self.filter3 = QCheckBox("高斯低通滤波")
+
         filter_layout.addWidget(self.filter1)
         filter_layout.addWidget(self.filter2)
         filter_layout.addWidget(self.filter3)
-
+        filter_layout.setAlignment(Qt.AlignCenter)
         self.YesButton = QPushButton("确定")
         self.NoButton = QPushButton("取消")
         YN_layout = QHBoxLayout()
