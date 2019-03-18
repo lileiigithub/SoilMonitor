@@ -74,6 +74,7 @@ class Dbscan_cluster(object):
         # 计算耗时
         return round(time.time()-self.start_time,2)
 
+
 if __name__ == '__main__':
     import sys
     # img_path = sys.argv[1] #"data/180524_172941.jpg"

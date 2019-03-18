@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from preprocess import PreprocessImg
-from soildetector import Detector
+from soilDetectorGauss import GaussDetector
 from dbscanClusterImg import Dbscan_cluster
 from classification import Classification
 import time
@@ -9,6 +9,7 @@ from datetime import datetime
 import os
 from globalData import Data
 from soilMonitorLog import SMLog
+from copy import deepcopy
 import cv2
 
 #############################################################################
@@ -29,34 +30,40 @@ class RecognitionAlgorithm(object):
         self.filtered_img_path = Data.filtered_img_folder+name_img_use_time+".jpg"
         self.segmented_img_path = Data.segmented_img_folder+name_img_use_time+".jpg"
         self.clustered_img_path = Data.clustered_img_folder+name_img_use_time+".jpg"
+        self.rectangle_img_path = Data.clustered_img_folder + name_img_use_time + "_sub.jpg"
 
     def implement(self):
         #
-        bgr_arr = self.bgr_arr
+        bgr_arr = deepcopy(self.bgr_arr)
         cv2.imwrite(self.raw_img_path, bgr_arr) # 保存原始图片
         SMLog.info("保存原始图片")
 
         # 去噪处理
-        preprocess = PreprocessImg(bgr_arr)
-        preprocess.medianFilter()
-        bgr_arr = preprocess.get_filtered_arr()
-        Data.filtered_img_arr = bgr_arr  # 保存到Data
-        preprocess.save_filtered_img(self.filtered_img_path)  # 保存去噪后图片
-        SMLog.info("保存去噪后图片")
-        SMLog.info("去噪处理耗时(s): %s", preprocess.used_time)
+        # preprocess = PreprocessImg(bgr_arr)
+        # preprocess.medianFilter()
+        # bgr_arr = preprocess.get_filtered_arr()
+        # Data.filtered_img_arr = bgr_arr  # 保存到Data
+        # preprocess.save_filtered_img(self.filtered_img_path)  # 保存去噪后图片
+        # SMLog.info("保存去噪后图片")
+        # SMLog.info("去噪处理耗时(s): %s", preprocess.used_time)
 
         # 图像分割
-        soildetector = Detector(bgr_arr)
-        bgr_arr = soildetector.soil_img_arr()
+        soildetector = GaussDetector(bgr_arr)
+        segmented_bgr_arr = soildetector.soil_img_arr()
         Data.segmented_img_arr = soildetector.processed_rgb_arr_3d  # 保存到Data
         soildetector.save_segmented_img(self.segmented_img_path)  # 保存图像
         SMLog.info("保存分割后图片")
         SMLog.info("岩土检测耗时(s): %s", soildetector.used_time)
 
         # 区域聚类
-        bgr_arr = bgr_arr[250:350, 350:450, :]   #  截取中心 100*100 区域聚类
+        bgr_arr = deepcopy(segmented_bgr_arr)[250:350, 350:450, :]   #  截取中心 100*100 区域聚类
         db = Dbscan_cluster(bgr_arr)
         soil_mean = db.dbscan_cluster(db.lab_arr)
+
+        rect_bgr_arr = deepcopy(segmented_bgr_arr)
+        cv2.rectangle(rect_bgr_arr, (350, 250), (450, 350), (0, 0, 255))  # 画框
+        cv2.imwrite(self.rectangle_img_path , rect_bgr_arr)
+        SMLog.info("保存区域选择后图片")
         SMLog.info("岩土聚类中心：%s", soil_mean)
         bgr_arr = db.clustered_arr()
         Data.clustered_img_arr = bgr_arr  # 保存到Data

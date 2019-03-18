@@ -55,6 +55,7 @@ if __name__ == '__main__':
         img_dir = img_path
         dir_list = os.listdir(img_dir)
         img_list = []
+
         # remove file that is not image
         for item in dir_list:
             if(item.count(".jpg")>=1 or item.count(".JPG")>=1):

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #############################################################################
-## 土壤检测
+## 使用混合高斯算法  图像分割，岩土检测
 ##
 ##
 #############################################################################
@@ -13,7 +13,7 @@ import time
 import os
 from soilMonitorLog import SMLog
 
-class Detector(object):
+class GaussDetector(object):
     def __init__(self,_img_arr):
         self.start_time = time.time()
 
@@ -111,7 +111,7 @@ class Detector(object):
 if __name__ == '__main__':
     import sys
     img_path = sys.argv[1] #"data/180524_172941.jpg"
-    soildetctor = Detector(cv2.imread(img_path))
+    soildetctor = GaussDetector(cv2.imread(img_path))
     print("model means:", soildetctor.model.means_)
     print("model weights:", soildetctor.model.weights_)
     soildetctor.soil_img_arr()
