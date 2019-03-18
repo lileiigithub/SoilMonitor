@@ -2,7 +2,14 @@
 import cv2
 import sys
 import os
-from dbscanClusterImg import Dbscan_segmention
+# # from dbscanClusterImg import Dbscan_cluster
+import sys
+sys.path.append("..")
+print(sys.path)
+
+from ..monitor.dbscanClusterImg import Dbscan_cluster
+from ..monitor.soilMonitorLog import SMLog
+
 import numpy as np
 np.set_printoptions(precision=2)
 
@@ -14,12 +21,11 @@ class CutAndCalc(object):
         self.weight = _img_path.split("\\")[-2]
         self.img_arr = cv2.imread(_img_path)
         self.img_shape = self.img_arr.shape
-        self.check_img_size()
+        # self.check_img_size()
         self.img_width = self.img_shape[0]
         self.img_length = self.img_shape[1]
         self.labels = []
         self.n_clusters_ = 0
-        self.labimg = cv2.cvtColor(self.img_arr, cv2.COLOR_BGR2LAB)
 
     # cut the endless part
     def check_img_size(self):
@@ -50,13 +56,15 @@ class CutAndCalc(object):
         imgs_path = [img1_path,img2_path,img3_path,img4_path]
         Lab_center_list = []
         for path in imgs_path:
-            db = Dbscan_segmention(path)
+            img_array = cv2.imread(path)
+            db = Dbscan_cluster(img_array)
             # db.dbscan_claster_lab()
-            means_list = db.dbscan_claster(0, 5)
-            Lab_center_list.append(means_list)
+            means = db.dbscan_cluster(db.lab_arr)  #  对 lab值聚类
+            Lab_center_list.append(means)
             Lab_center_list.sort()
         lab_mean = (np.array(Lab_center_list[1])+np.array(Lab_center_list[2]))/2  # mean
-        print('\n',"均值：",lab_mean)
+        SMLog.info("Lab_center_list: %s", Lab_center_list)
+        SMLog.info("均值：%s",lab_mean)
         return lab_mean
 
 if __name__ == '__main__':
