@@ -40,7 +40,11 @@ class Dbscan_cluster(object):
         # core_samples_mask[db.core_sample_indices_] = True
 
         self.labels = db.labels_
-        labels_count = collections.Counter(self.labels.flatten())
+        self.labels_no_noise = []
+        for label in self.labels.flatten():
+            if label!=-1: self.labels_no_noise.append(label)
+        self.labels_no_noise = np.array(self.labels_no_noise)
+        labels_count = collections.Counter(self.labels_no_noise)
         SMLog.info("聚类labels结果:%s", labels_count)
         self.soil_label = labels_count.most_common(1)[0][0]  # 找到标签最多的类
         SMLog.info("soil label:%s", self.soil_label)
@@ -50,6 +54,8 @@ class Dbscan_cluster(object):
             mean_of_cluster = [np.mean(X[self.labels == i][:, 0]), np.mean(X[self.labels == i][:, 1]), np.mean(X[self.labels == i][:, 2])]
             if i==self.soil_label:
                 soil_mean_of_cluster =  mean_of_cluster
+            else:
+                SMLog.error("soil_mean_of_cluster 错误")
             mean.append(mean_of_cluster)
             SMLog.debug("%s :聚类中心：%s",i,mean_of_cluster)
         ratio = len(self.labels[self.labels[:] == -1]) / len(self.labels)

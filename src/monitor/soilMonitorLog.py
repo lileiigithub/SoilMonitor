@@ -7,19 +7,21 @@ import logging
 class SMLog(object):
     logger =  logging.getLogger("SoilMonitor")
     logger.setLevel(logging.DEBUG)
-    #  控制台 handler
-    consoleHandle = logging.StreamHandler()
-    consoleHandle.setLevel(logging.INFO)
-    ch_formatter = logging.Formatter('%(levelname)s - %(message)s')
-    consoleHandle.setFormatter(ch_formatter)
-    logger.addHandler(consoleHandle)
 
-    # 日志文件 handler
-    fileHandle =logging.FileHandler('soilMonitor.log')
-    fileHandle.setLevel(logging.DEBUG)
-    fileHandle_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    fileHandle.setFormatter(fileHandle_formatter)
-    logger.addHandler(fileHandle)
+    if not logger.handlers:  # 如果存在 handle 则不添加，不免和重复写日志
+        #  控制台 handler
+        consoleHandle = logging.StreamHandler()
+        consoleHandle.setLevel(logging.INFO)
+        ch_formatter = logging.Formatter('%(levelname)s - %(message)s')
+        consoleHandle.setFormatter(ch_formatter)
+        logger.addHandler(consoleHandle)
+
+        # 日志文件 handler
+        fileHandle =logging.FileHandler('soilMonitor.log')
+        fileHandle.setLevel(logging.DEBUG)
+        fileHandle_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fileHandle.setFormatter(fileHandle_formatter)
+        logger.addHandler(fileHandle)
 
     # def __init__(self):
     #     pass

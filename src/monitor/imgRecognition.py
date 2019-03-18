@@ -54,7 +54,7 @@ class RecognitionAlgorithm(object):
         SMLog.info("岩土检测耗时(s): %s", soildetector.used_time)
 
         # 区域聚类
-        bgr_arr = bgr_arr[350:350+100, 250:250+100, :]   #  截取中心 100*100 区域聚类
+        bgr_arr = bgr_arr[250:350, 350:450, :]   #  截取中心 100*100 区域聚类
         db = Dbscan_cluster(bgr_arr)
         soil_mean = db.dbscan_cluster(db.lab_arr)
         SMLog.info("岩土聚类中心：%s", soil_mean)
