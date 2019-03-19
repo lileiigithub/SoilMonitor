@@ -1,6 +1,17 @@
 # -*- coding: utf-8 -*-
 import cv2
 import os
+import sys
+
+# 添加环境变量
+CUR_PATH = os.getcwd()
+SRC_PATH = os.path.dirname(CUR_PATH)
+MONITOR_PATH = os.path.join(SRC_PATH, "monitor")
+sys.path.append(SRC_PATH)
+sys.path.append(MONITOR_PATH)
+for _path in sys.path:
+    print(_path)
+
 from src.monitor.dbscanClusterImg import Dbscan_cluster
 from src.monitor.soilMonitorLog import SMLog
 
@@ -21,16 +32,14 @@ class CutAndCalc(object):
         self.n_clusters_ = 0
 
     def cut_and_cal_img(self,_save_dir):
-        rec_p = (380, 250)  # 截图顶点
+        rec_p = (380, 250)  # 截图顶点，numpy切片与opencv坐标相反
         self.subimg = self.img_arr[rec_p[1]:rec_p[1] + 100, rec_p[0]:rec_p[0] + 100, :]
-        self.subimg = cv2.rect
         subimg_path = os.path.join(_save_dir, self.weight+"_"+self.name + "_sub.png")
         cv2.imwrite(subimg_path, self.subimg)
         cv2.rectangle(self.img_arr, rec_p, (rec_p[0] + 100, rec_p[1] + 100), (0, 0, 255))
         cv2.imwrite(os.path.join(_save_dir, self.weight+"_"+self.name + "_0.jpg"),self.img_arr)
 
         img_array = cv2.imread(subimg_path)
-        # print(img_array)
         db = Dbscan_cluster(img_array)
         # db.dbscan_claster_lab()
         soil_lab_means = db.dbscan_cluster(db.lab_arr)  # 对 lab值聚类

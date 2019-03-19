@@ -60,11 +60,11 @@ def network():
     sockobj = socket(AF_INET, SOCK_STREAM) # TCP连接
     sockobj.bind((myhost,myport))
     sockobj.listen(2)
-    print ('服务器开始运行...')
+    print ('树莓派开始运行...')
     while True: #保持等待连接
-        print('等待连接...')
+        print('等待上位机连接...')
         connection, address = sockobj.accept()
-        print ('连接到计算机: ',address)
+        print ('连接到上位机: ',address)
         while True: # 保持传送数据
             try:
                 cmd = connection.recv(2) # 会阻塞程序
