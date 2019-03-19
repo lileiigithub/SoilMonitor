@@ -21,10 +21,12 @@ class CutAndCalc(object):
         self.n_clusters_ = 0
 
     def cut_and_cal_img(self,_save_dir):
-        self.subimg = self.img_arr[250:350, 350:450, :]
+        rec_p = (380, 250)  # 截图顶点
+        self.subimg = self.img_arr[rec_p[1]:rec_p[1] + 100, rec_p[0]:rec_p[0] + 100, :]
+        self.subimg = cv2.rect
         subimg_path = os.path.join(_save_dir, self.weight+"_"+self.name + "_sub.png")
         cv2.imwrite(subimg_path, self.subimg)
-        cv2.rectangle(self.img_arr,(350,250),(450,350),(0,0,255))
+        cv2.rectangle(self.img_arr, rec_p, (rec_p[0] + 100, rec_p[1] + 100), (0, 0, 255))
         cv2.imwrite(os.path.join(_save_dir, self.weight+"_"+self.name + "_0.jpg"),self.img_arr)
 
         img_array = cv2.imread(subimg_path)
