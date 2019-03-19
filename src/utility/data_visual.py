@@ -12,6 +12,9 @@ from matplotlib.font_manager import FontProperties
 from pylab import mpl
 import time
 time1 = time.time()
+from pylab import mpl
+mpl.rcParams['font.sans-serif'] = ['SimHei'] #指定默认字体   
+mpl.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题
 # 论文画图, 湿度曝光一定时，lab值随光强的变化
 def visual_lab_step_Lux():
     mpl.rcParams['font.sans-serif'] = ['SimHei'] #指定默认字体  
@@ -97,11 +100,19 @@ class VisualData(object):
             self.y.append(y)
 
     def visual_data(self):
-        plt.plot(np.array(self.x), self.y, '*-')  #  np.array(self.x)[:,0]
-        plt.ylabel("soil humidity")
-        plt.xlabel("Lab value")
+        print(self.x)
+        self.x = np.array(self.x)
+        print(self.x.shape)
+        a = self.x[:,1]
+        b = self.x[:,2]
+
+        plt.plot(self.y,a, 'o-')
+        plt.plot(self.y,b, '*-')
+        plt.legend(['a 值','b 值'])  # 图例
+        plt.xlabel("岩土湿度(%)")
+        plt.ylabel("数值")
         # plt.show()
-        plt.savefig(r"E:\UbuntuPaper\论文相关图片\lab_hum.png",dpi=320)
+        plt.savefig(r"data\save\lab_hum.png",dpi=320)
 
     def write_data_to_csv(self,_file_path):
         with open(_file_path,"w") as file:
@@ -110,17 +121,17 @@ class VisualData(object):
                 file.writelines(linein)
 
 if __name__ == '__main__':
-    visual_lab_step_Lux()
+    # visual_lab_step_Lux()
     # visual_lab_Lux922()
     # visual_level1()
     # visual_rgb()
     # visual_lab_Lux915()
-    # file_path = "-3expo.txt"
+    file_path = "data/-3expo.txt"
     # file_path = r"E:\UbuntuData\camera\-3expo-rgb\-3expo-rgb.txt"
     # file_path = "data_result.txt"
     # file_path = "bake.txt"
-    # vs = VisualData(file_path)
-    # vs.visual_data()
+    vs = VisualData(file_path)
+    vs.visual_data()
     # vs.write_data_to_csv("hum_lab.txt")
 
 

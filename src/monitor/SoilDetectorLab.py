@@ -38,10 +38,8 @@ class LabDetector(object):
         cv2.imwrite(_save_path, self.processed_bgr_arr)
 
     def time_relation_path(self):
-        PATH = "data/pure"
-        img_name = datetime.now().date().strftime("%y%m%d") + datetime.now().time().strftime("_%H%M%S") +"_"+ self.path.split('/')[-1]
-        img_path = os.path.join(PATH, img_name)
-        return img_path
+        img_name = datetime.now().date().strftime("%y%m%d") + datetime.now().time().strftime("_%H%M%S")
+        return img_name
 
     def save_segmented_img(self,_path):
         # 保存图片到硬盘
@@ -58,6 +56,6 @@ if __name__ == '__main__':
     img_path = "data/test/3.jpg"
     soildetctor = LabDetector(cv2.imread(img_path))
     soildetctor.soil_img_arr()
-    pure_soil_path = img_path.split(".")[0]+"_.jpg"
+    pure_soil_path = img_path.split(".")[0]+"_"+soildetctor.time_relation_path()+".jpg"
     soildetctor.save_soil_picture(pure_soil_path)
     print(soildetctor.used_time)
