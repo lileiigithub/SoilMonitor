@@ -16,6 +16,8 @@ from matplotlib.font_manager import FontProperties
 import time
 time1 = time.time()
 from pylab import mpl
+from sklearn.externals import joblib
+
 mpl.rcParams['font.sans-serif'] = ['SimHei'] #指定默认字体   
 mpl.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题
 
@@ -73,10 +75,10 @@ class HumidityRegression(object):
         # self.reg = linear_model.Lasso(alpha=0.1)
         # self.reg = linear_model.LassoLars(alpha=.1)
         # self.reg = linear_model.BayesianRidge()
-        self.reg = ElasticNet(alpha=0.1, l1_ratio=0.2)
+        # self.reg = ElasticNet(alpha=0.1, l1_ratio=0.2)
         # self.reg  = tree.DecisionTreeRegressor()
         # self.reg  = svm.SVR()
-        # self.reg = linear_model.Ridge (alpha = .5)
+        self.reg = linear_model.Ridge (alpha = .5)
         # self.reg = KernelRidge(alpha = .8)
         # self.reg = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5,5), random_state=1)
         self.reg.fit(self.train_x, self.train_y)
@@ -97,8 +99,8 @@ class HumidityRegression(object):
         print("loss:",self.loss)
 
     def show_data(self):
-        print(self.now_test_y)
-        print(self.predict_y)
+        # print(self.now_test_y)
+        # print(self.predict_y)
         plt.plot(self.now_test_y, 'r*-')  # self.test_x,
         plt.plot(self.predict_y,'b*-') # self.test_x,
         plt.show()
@@ -106,7 +108,7 @@ class HumidityRegression(object):
         # print(self.train_y)
         # print(self.test_x)
         # print(self.test_y)
-    def show_L_hum(self):
+    def validationShow(self):
         # plt.plot(np.array(self.x)[:,0],self.y ,'r*-')  # self.test_x,
         # plt.plot(np.array(self.now_test_x)[:, 0], self.predict_y, 'b*-')  # self.test_x,
         # 论文画图
@@ -124,12 +126,21 @@ class HumidityRegression(object):
         # plt.figure(frameon=False, dpi=250)
         # plt.savefig("save/3.jpg",frameon=True, dpi=250)#, dpi=200
 
+    def save_model(self):
+        joblib.dump(self.reg,"data/model/ridge.model")
+        print("saved model.")
+
+    def test_saved_model(self):
+        self.reg = joblib.load("data/model/ridge.model")
 
 if __name__ == '__main__':
     PATH = "updata/weight_lab.csv"
     hr = HumidityRegression(PATH)
     hr.regression_model()
+
+    # hr.save_model()
+    hr.test_saved_model()
     hr.regression_predict()
     hr.calc_loss()
     # hr.show_data()
-    hr.show_L_hum()
+    # hr.validationShow()

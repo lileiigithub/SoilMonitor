@@ -26,7 +26,7 @@ if __name__ == '__main__':
     cap.set(4,600)
     # cap.set(3,1600)
     # cap.set(4,1200)
-    take_photoes("new")
+    take_photoes("picture")
     cap.release()
     cv2.destroyAllWindows()
 

@@ -19,24 +19,49 @@ import matplotlib.pyplot as plt
 
 from sklearn.linear_model import lasso_path, enet_path
 from sklearn import datasets
+from pylab import mpl
+mpl.rcParams['font.sans-serif'] = ['SimHei'] #指定默认字体   
+mpl.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题
+# diabetes = datasets.load_diabetes()
+# X = diabetes.data
+# y = diabetes.target
 
-diabetes = datasets.load_diabetes()
-X = diabetes.data
-y = diabetes.target
+# X /= X.std(axis=0)  # Standardize data (easier to set the l1_ratio parameter)
+PATH = "updata/weight_lab.csv"
+Line = []
+X = []
+Y = []
+with  open(PATH) as file:
+    for line in file.readlines():
+        if line == "\n" or line == "" or line.count("#") >= 1:
+            pass
+        else:
+            Line.append(line)
+for item in Line:
+    item = item.strip()
+    weight = float(item.split(",")[0])
+    L = float(item.split(",")[1])
+    a = float(item.split(",")[2])
+    b = float(item.split(",")[3])
 
-X /= X.std(axis=0)  # Standardize data (easier to set the l1_ratio parameter)
+    x = [L, a, b]
+    y = (weight - 856) / 616  # 实验一含水量计算公式
+    y = y * 100
+    # x = (x - 1438) / 1198  # 实验二 含水量计算公式
+    X.append(x)
+    Y.append(y)
 
 # Compute paths
 
 eps = 5e-3  # the smaller it is the longer is the path
 
 print("Computing regularization path using the lasso...")
-alphas_lasso, coefs_lasso, _ = lasso_path(X, y, eps, fit_intercept=False)
+alphas_lasso, coefs_lasso, _ = lasso_path(X, Y, eps, fit_intercept=False)
 
 
 print("Computing regularization path using the elastic net...")
 alphas_enet, coefs_enet, _ = enet_path(
-    X, y, eps=eps, l1_ratio=0.8, fit_intercept=False)
+    X, Y, eps=eps, l1_ratio=0.8, fit_intercept=False)
 
 # Display results
 
@@ -52,9 +77,9 @@ for coef_l, coef_e, c in zip(coefs_lasso, coefs_enet, colors):
     l2 = plt.plot(neg_log_alphas_enet, coef_e, linestyle='--', c=c)
 
 plt.xlabel('-Log(alpha)')
-plt.ylabel('coefficients')
-plt.title('Lasso and Elastic-Net Paths')
+plt.ylabel('权值')
+# plt.title('Lasso and Elastic-Net Paths')
 plt.legend((l1[-1], l2[-1]), ('Lasso', 'Elastic-Net'), loc='lower left')
 plt.axis('tight')
-
+plt.savefig(r"data\save\elastic_lasso.png", dpi=320)
 plt.show()

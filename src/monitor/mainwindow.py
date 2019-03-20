@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import (QAction, QApplication, QFileDialog, QMainWindow,QLa
 from PyQt5 import QtWidgets
 from datetime import datetime
 import cv2
+import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('Qt5Agg')
@@ -45,12 +46,12 @@ class MainWindow(QMainWindow):
         #主界面
         self.img_label = QLabel("接收的原始岩土图像")
         self.img_label.setAlignment(Qt.AlignCenter) # label 居中
-        self.img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
+        self.img_label.setFont(QFont("Roman times", 14)) #, QFont.Bold
         self.raw_img_view = QGraphicsView()
 
         self.pro_img_label = QLabel("图像分割后岩土图像")
         self.pro_img_label.setAlignment(Qt.AlignCenter) # label 居中
-        self.pro_img_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
+        self.pro_img_label.setFont(QFont("Roman times", 14)) #, QFont.Bold
         self.segmented_img_view = QGraphicsView()
 
         self.chooseImgButton = QPushButton("检测本地岩土图像")
@@ -58,15 +59,15 @@ class MainWindow(QMainWindow):
 
         self.grayHistogram_label = QLabel("聚类后岩土图像")
         self.grayHistogram_label.setAlignment(Qt.AlignCenter) # label 居中
-        self.grayHistogram_label.setFont(QFont("Roman times", 12)) #, QFont.Bold
+        self.grayHistogram_label.setFont(QFont("Roman times", 14)) #, QFont.Bold
         self.clustered_img_view = QGraphicsView()
 
         self.text_label = QLabel("岩土湿度检测结果")
         self.text_label.setAlignment(Qt.AlignCenter) # label 居中
-        self.text_label.setFont(QFont("Roman times", 12))
+        self.text_label.setFont(QFont("Roman times", 14))
         self.result_text = QTextBrowser()
         self.result_text.setReadOnly(True)
-        self.result_text.setFont(QFont("Roman times", 12))#, QFont.Bold
+        self.result_text.setFont(QFont("Roman times", 16))#, QFont.Bold
         self.hide_button = QPushButton("")
         # self.hide_button.setVisible(False)
         # 布局
@@ -216,9 +217,12 @@ class MainWindow(QMainWindow):
     def show_result(self):
         #显示预测输出结果
         str_date = datetime.now().date().isoformat()
-        str_time = datetime.now().time().isoformat()
-        result_str = "日期: "+str_date+'\n'+"时间: "+str_time+'\n'+"预测类别结果为: "+"类别"+str(Data.predicted_classification)
-        result_str += "\n算法耗时(s): "+str(Data.algorithm_used_time)
+        str_time = datetime.now().time().strftime("%H:%M:%S")
+        result_str = "日期: "+str_date+'\n'+"时间: "+str_time\
+                     +"\n图像: "+str(Data.img_name)\
+                     +"\nLab聚类中心点: \n"+"    "+str(np.around(Data.soil_mean,2))\
+                     +"\n检测含水量为: "+str(np.around(Data.predict_result,2)[0])+"%"\
+                     +"\n算法耗时(s): "+str(Data.algorithm_used_time)
         self.result_text.setText(result_str)
         # self.result_text.show()
 

@@ -4,6 +4,7 @@ from preprocess import PreprocessImg
 from soilDetectorGauss import GaussDetector
 from dbscanClusterImg import Dbscan_cluster
 from classification import Classification
+from modelPredict import HumidityPredict
 import time
 from datetime import datetime
 import os
@@ -26,6 +27,7 @@ class RecognitionAlgorithm(object):
         self.saveProImg = saveProImg
         # 设置各种图片保存路径
         name_img_use_time = self.time_name()  # 180524_172850
+        Data.img_name = name_img_use_time+".jpg"
         self.raw_img_path = Data.raw_img_folder+name_img_use_time+".jpg"
         self.filtered_img_path = Data.filtered_img_folder+name_img_use_time+".jpg"
         self.segmented_img_path = Data.segmented_img_folder+name_img_use_time+".jpg"
@@ -56,30 +58,30 @@ class RecognitionAlgorithm(object):
         SMLog.info("岩土检测耗时(s): %s", soildetector.used_time)
 
         # 区域聚类
-        bgr_arr = deepcopy(segmented_bgr_arr)[250:350, 350:450, :]   #  截取中心 100*100 区域聚类
-        db = Dbscan_cluster(bgr_arr)
-        soil_mean = db.dbscan_cluster(db.lab_arr)
-
+        segmented_bgr_arr = deepcopy(self.bgr_arr)  #  不使用分割后的图像
+        # 画框 begin
         rect_bgr_arr = deepcopy(segmented_bgr_arr)
         cv2.rectangle(rect_bgr_arr, (350, 250), (450, 350), (0, 0, 255))  # 画框
-        cv2.imwrite(self.rectangle_img_path , rect_bgr_arr)
+        cv2.imwrite(self.rectangle_img_path, rect_bgr_arr)
         SMLog.info("保存区域选择后图片")
+        # 画框 end
+        bgr_arr = deepcopy(segmented_bgr_arr)[250:350, 350:450, :]  # 截取中心 100*100 区域聚类
+        db = Dbscan_cluster(bgr_arr)
+        soil_mean = db.dbscan_cluster(db.lab_arr)
+        Data.soil_mean = soil_mean
         SMLog.info("岩土聚类中心：%s", soil_mean)
         bgr_arr = db.clustered_arr()
         Data.clustered_img_arr = bgr_arr  # 保存到Data
         cv2.imwrite(self.clustered_img_path,bgr_arr)  # 保存图像
         SMLog.info("保存聚类后图片")
         SMLog.info("岩土聚类耗时(s): %s", db.used_time)
-        # 回归算法
 
-        # imgprocessor = PreprocessImg(detected_img_arr)
-        # X_data = imgprocessor.get_X()
-        # Data.grayhist_img_arr = imgprocessor.thresh_gray_img
-        # print("图片处理耗时(s): ", imgprocessor.used_time)
-        # classifier = Classification(X_data)
-        # class_index = classifier.predict()
-        # print("图片分类耗时(s): ", classifier.used_time)
-        # return class_index
+        # 回归算法 , input: soil_mean
+        hum_predictor = HumidityPredict(Data.model_path)
+        predict_y = hum_predictor.regression_predict(soil_mean)
+        Data.predict_result = predict_y
+        SMLog.info("湿度预测结果：%s", predict_y)
+        SMLog.info("湿度预测耗时(s): %s", db.used_time)
 
     def time_name(self):
         img_time_name = datetime.now().date().strftime("%y%m%d") + datetime.now().time().strftime("_%H%M%S")
