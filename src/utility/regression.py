@@ -48,17 +48,13 @@ class HumidityRegression(object):
     def split_data(self, _line_list):
         for item in _line_list:
             item = item.strip()
-            y = float(item.split(":")[0])
-            x = item.split(":")[1]
-            temp = x.strip().split("[")[-1].split("]")[0].strip()
-            temp = temp.split(" ")
-            temp_list = []
-            for s in temp:
-                if s!='':
-                    temp_list.append(s)
-            # print(temp_list)
-            x = [float(temp_list[0]),float(temp_list[1]),float(temp_list[2])]
-            y = (y-856)/616  # 实验一含水量计算公式
+            weight = float(item.split(",")[0])
+            L = float(item.split(",")[1])
+            a = float(item.split(",")[2])
+            b = float(item.split(",")[3])
+
+            x = [L,a,b]
+            y = (weight-856)/616  # 实验一含水量计算公式
             y = y*100
             # x = (x - 1438) / 1198  # 实验二 含水量计算公式
             self.x.append(x)
@@ -123,18 +119,17 @@ class HumidityRegression(object):
         plt.plot(self.predict_y, 'ko-',label="预测值")  # self.test_x,
         plt.legend() #loc ='upper right',
         # plt.plot(self.predict_y,self.y,'b*-') # self.test_x,
-        # plt.show()
+        plt.show()
         # plt.rcParams['savefig.dpi'] = 300  # 图片像素
         # plt.figure(frameon=False, dpi=250)
-        plt.savefig("save/3.jpg",frameon=True, dpi=250)#, dpi=200
+        # plt.savefig("save/3.jpg",frameon=True, dpi=250)#, dpi=200
 
 
 if __name__ == '__main__':
-    PATH = "-3expo.txt"
-    # PATH = r"E:\UbuntuData\camera\-3expo-rgb\-3expo-rgb.txt"
+    PATH = "updata/weight_lab.csv"
     hr = HumidityRegression(PATH)
     hr.regression_model()
-    hr.elatic_net_predict()
+    hr.regression_predict()
     hr.calc_loss()
     # hr.show_data()
     hr.show_L_hum()
