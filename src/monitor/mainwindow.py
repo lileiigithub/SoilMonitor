@@ -21,7 +21,7 @@ from networkset import NetworkDialog
 from denoiseSet import DenoiseDialog
 from imgRecognition import RecognitionAlgorithm
 from globalData import Data
-from thread import ReceiceImg
+from multiThread import ReceiceImg
 from soilMonitorLog import SMLog
 
 # 使用 matplotlib中的FigureCanvas (在使用 Qt5 Backends中 FigureCanvas继承自QtWidgets.QWidget)

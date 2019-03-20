@@ -73,7 +73,7 @@ class HumidityRegression(object):
                 self.train_x.append(self.x[index])
                 self.train_y.append(self.y[index])
 
-    def elatic_net_model(self):
+    def regression_model(self):
         # self.reg = linear_model.Lasso(alpha=0.1)
         # self.reg = linear_model.LassoLars(alpha=.1)
         # self.reg = linear_model.BayesianRidge()
@@ -85,7 +85,7 @@ class HumidityRegression(object):
         # self.reg = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5,5), random_state=1)
         self.reg.fit(self.train_x, self.train_y)
 
-    def elatic_net_predict(self):
+    def regression_predict(self):
         # self.predict_y = self.reg.predict(self.test_x)
         self.predict_y = self.reg.predict(self.now_test_x)
         print(self.predict_y)
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     PATH = "-3expo.txt"
     # PATH = r"E:\UbuntuData\camera\-3expo-rgb\-3expo-rgb.txt"
     hr = HumidityRegression(PATH)
-    hr.elatic_net_model()
+    hr.regression_model()
     hr.elatic_net_predict()
     hr.calc_loss()
     # hr.show_data()

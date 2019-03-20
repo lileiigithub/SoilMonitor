@@ -89,6 +89,7 @@ class RecognitionAlgorithm(object):
     def used_time(self):
         # 计算耗时
         return round(time.time()-self.__start_time,2)
+
 if __name__ == '__main__':
     import cv2
     img_path = "data/180524_172941.jpg"
