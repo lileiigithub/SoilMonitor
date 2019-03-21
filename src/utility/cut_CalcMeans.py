@@ -37,12 +37,13 @@ class CutAndCalc(object):
         subimg_path = os.path.join(_save_dir, self.weight+"_"+self.name + "_sub.png")
         cv2.imwrite(subimg_path, self.subimg)
         cv2.rectangle(self.img_arr, rec_p, (rec_p[0] + 100, rec_p[1] + 100), (0, 0, 255))
-        cv2.imwrite(os.path.join(_save_dir, self.weight+"_"+self.name + "_0.jpg"),self.img_arr)
+        cv2.imwrite(os.path.join(_save_dir, self.weight+"_"+self.name + "_rec.jpg"),self.img_arr)
 
         img_array = cv2.imread(subimg_path)
         db = Dbscan_cluster(img_array)
         # db.dbscan_claster_lab()
         soil_lab_means = db.dbscan_cluster(db.lab_arr)  # 对 lab值聚类
+        cv2.imwrite(os.path.join(_save_dir, self.weight + "_" + self.name + "_clst.jpg"), db.clustered_arr()) # 保存聚类后图片
         SMLog.info("sub image lab mean：%s", soil_lab_means)
         return soil_lab_means
 

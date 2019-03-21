@@ -40,12 +40,14 @@ class Dbscan_cluster(object):
         # core_samples_mask[db.core_sample_indices_] = True
 
         self.labels = db.labels_
+        # 统计各聚类中心点的数量 beign
         self.labels_no_noise = []
         for label in self.labels.flatten():
             if label!=-1: self.labels_no_noise.append(label)
         self.labels_no_noise = np.array(self.labels_no_noise)
         labels_count = collections.Counter(self.labels_no_noise)
         SMLog.info("聚类labels结果:%s", labels_count)
+        # end
         self.soil_label = labels_count.most_common(1)[0][0]  # 找到标签最多的类
         SMLog.info("soil label:%s", self.soil_label)
         self.n_clusters_ = len(set(self.labels)) - (1 if -1 in self.labels else 0)
@@ -55,13 +57,12 @@ class Dbscan_cluster(object):
             if i==self.soil_label:
                 soil_mean_of_cluster =  mean_of_cluster
             else:
-                SMLog.error("soil_mean_of_cluster 错误")
+                SMLog.error("其他聚类中心：%s", mean_of_cluster)
             mean.append(mean_of_cluster)
             SMLog.debug("%s :聚类中心：%s",i,mean_of_cluster)
         ratio = len(self.labels[self.labels[:] == -1]) / len(self.labels)
         SMLog.info("noise ratio: %s", ratio)
         return soil_mean_of_cluster  # 返回了最后一个聚类中心点，后期需要改为返回最大的类的中心点
-
 
     def clustered_arr(self):
         gbr_arr_flatten = self.gbr_arr.reshape(-1, 3)  # (r,g,b)
@@ -83,9 +84,9 @@ if __name__ == '__main__':
     img_arr = cv2.imread(img_path)
     db = Dbscan_cluster(img_arr)
     # db.dbscan_claster_lab()
-    db.dbscan_cluster(db.lab_arr, 5)
-    save_path = "data/cluster/dbscan_test_c.png"
-    db.save_segmented_imgs(save_path)
-    time2 = time.time()
-    SMLog.info('time:%s', time2 - time1)
+    db.dbscan_cluster(db.lab_arr)
+    # save_path = "data/cluster/dbscan_test_c.png"
+    # db.save_segmented_imgs(save_path)
+    # time2 = time.time()
+    # SMLog.info('time:%s', time2 - time1)
 
