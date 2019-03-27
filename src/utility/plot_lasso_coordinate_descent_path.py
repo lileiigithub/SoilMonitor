@@ -39,14 +39,13 @@ with  open(PATH) as file:
             Line.append(line)
 for item in Line:
     item = item.strip()
-    weight = float(item.split(",")[0])
+    hum = float(item.split(",")[0])
     L = float(item.split(",")[1])
     a = float(item.split(",")[2])
     b = float(item.split(",")[3])
 
     x = [L, a, b]
-    y = (weight - 856) / 616  # 实验一含水量计算公式
-    y = y * 100
+    y = hum
     # x = (x - 1438) / 1198  # 实验二 含水量计算公式
     X.append(x)
     Y.append(y)
@@ -56,7 +55,7 @@ for item in Line:
 eps = 5e-3  # the smaller it is the longer is the path
 
 print("Computing regularization path using the lasso...")
-alphas_lasso, coefs_lasso, _ = lasso_path(X, Y, eps, fit_intercept=False)
+alphas_lasso, coefs_lasso, _ = lasso_path(X, Y, eps, n_alphas = 100, fit_intercept=False)
 
 
 print("Computing regularization path using the elastic net...")
@@ -74,12 +73,13 @@ for coef_l, coef_e, c in zip(coefs_lasso, coefs_enet, colors):
     print(len(neg_log_alphas_lasso), len(coef_l))
     print(neg_log_alphas_lasso,coef_l)
     l1 = plt.plot(neg_log_alphas_lasso, coef_l, c=c)
-    l2 = plt.plot(neg_log_alphas_enet, coef_e, linestyle='--', c=c)
+    # l2 = plt.plot(neg_log_alphas_enet, coef_e, linestyle='--', c=c)
 
 plt.xlabel('-Log(alpha)')
 plt.ylabel('权值')
 # plt.title('Lasso and Elastic-Net Paths')
-plt.legend((l1[-1], l2[-1]), ('Lasso', 'Elastic-Net'), loc='lower left')
+# plt.legend((l1[-1]), ('Lasso')) # , loc='lower left'
+# plt.legend((l1[-1], l2[-1]), ('Lasso', 'Elastic-Net')) # , loc='lower left'
 plt.axis('tight')
 plt.savefig(r"data\save\elastic_lasso.png", dpi=320)
 plt.show()
