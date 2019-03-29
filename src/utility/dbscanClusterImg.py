@@ -8,7 +8,7 @@ from sklearn import metrics
 import numpy as np
 import os
 import collections
-from log import logger
+from src.monitor.soilMonitorLog import SMLog
 
 import time
 time1 = time.time()
@@ -41,9 +41,9 @@ class Dbscan_segmention(object):
 
         self.labels = db.labels_
         labels_count = collections.Counter(self.labels.flatten())
-        logger.info("聚类labels结果:%s", labels_count)
+        SMLog.info("聚类labels结果:%s", labels_count)
         self.soil_label = labels_count.most_common(1)[0][0]  # 找到标签最多的类
-        logger.info("soil label:%s", self.soil_label)
+        SMLog.info("soil label:%s", self.soil_label)
         self.n_clusters_ = len(set(self.labels)) - (1 if -1 in self.labels else 0)
         for i in range(self.n_clusters_):
             amount_clusting.append(len(self.labels[self.labels[:] == i]))
@@ -51,9 +51,9 @@ class Dbscan_segmention(object):
             if i==self.soil_label:
                 soil_mean_of_cluster =  mean_of_cluster
             mean.append(mean_of_cluster)
-            logger.info("%s :聚类中心：%s",i,mean_of_cluster)
+            SMLog.info("%s :聚类中心：%s",i,mean_of_cluster)
         ratio = len(self.labels[self.labels[:] == -1]) / len(self.labels)
-        logger.info("noise ratio: %s", ratio)
+        SMLog.info("noise ratio: %s", ratio)
         return soil_mean_of_cluster  # 返回了最后一个聚类中心点，后期需要改为返回最大的类的中心点
 
     def dbscan_claster_ab(self):
@@ -91,14 +91,14 @@ class Dbscan_segmention(object):
 if __name__ == '__main__':
     import sys
     # img_path = sys.argv[1] #"data/180524_172941.jpg"
-    img_path = "data/dbscan_test_1.png"
+    img_path = "data/cluster/dbscan_test.png"
     # PATH = "1006-340.png"
     img_arr = cv2.imread(img_path)
     db = Dbscan_segmention(img_arr)
     # db.dbscan_claster_lab()
-    db.dbscan_cluster(db.lab_arr, 5)
-    save_path = "data/cluster/dbscan_test_c.png"
+    db.dbscan_cluster(db.gbr_arr, 4)  # db.lab_arr
+    save_path = "data/cluster/dbscan_test_2.png"
     db.save_segmented_imgs(save_path)
     time2 = time.time()
-    logger.info('time:%s', time2 - time1)
+    SMLog.info('time:%s', time2 - time1)
 

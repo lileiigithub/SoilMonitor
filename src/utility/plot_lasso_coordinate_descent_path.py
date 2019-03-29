@@ -22,34 +22,17 @@ from sklearn import datasets
 from pylab import mpl
 mpl.rcParams['font.sans-serif'] = ['SimHei'] #指定默认字体   
 mpl.rcParams['axes.unicode_minus'] = False #解决保存图像是负号'-'显示为方块的问题
-# diabetes = datasets.load_diabetes()
-# X = diabetes.data
-# y = diabetes.target
+diabetes = datasets.load_diabetes()
+X = diabetes.data
+Y = diabetes.target
 
+X /= X.std(axis=0)  # Standardize data (easier to set the l1_ratio parameter)
+
+PATH = "updata/sim_data.txt"
+arr = np.genfromtxt(PATH, delimiter=",")
+Y = arr[:, 0]  # hum
+X = arr[:, 1:]  # features
 # X /= X.std(axis=0)  # Standardize data (easier to set the l1_ratio parameter)
-PATH = "updata/weight_lab.csv"
-Line = []
-X = []
-Y = []
-with  open(PATH) as file:
-    for line in file.readlines():
-        if line == "\n" or line == "" or line.count("#") >= 1:
-            pass
-        else:
-            Line.append(line)
-for item in Line:
-    item = item.strip()
-    hum = float(item.split(",")[0])
-    L = float(item.split(",")[1])
-    a = float(item.split(",")[2])
-    b = float(item.split(",")[3])
-
-    x = [L, a, b]
-    y = hum
-    # x = (x - 1438) / 1198  # 实验二 含水量计算公式
-    X.append(x)
-    Y.append(y)
-
 # Compute paths
 
 eps = 5e-3  # the smaller it is the longer is the path
@@ -60,7 +43,7 @@ alphas_lasso, coefs_lasso, _ = lasso_path(X, Y, eps, n_alphas = 100, fit_interce
 
 print("Computing regularization path using the elastic net...")
 alphas_enet, coefs_enet, _ = enet_path(
-    X, Y, eps=eps, l1_ratio=0.8, fit_intercept=False)
+    X, Y, eps=eps, l1_ratio=0.5, fit_intercept=False)
 
 # Display results
 
@@ -71,15 +54,15 @@ neg_log_alphas_enet = -np.log10(alphas_enet)
 
 for coef_l, coef_e, c in zip(coefs_lasso, coefs_enet, colors):
     print(len(neg_log_alphas_lasso), len(coef_l))
-    print(neg_log_alphas_lasso,coef_l)
-    l1 = plt.plot(neg_log_alphas_lasso, coef_l, c=c)
-    # l2 = plt.plot(neg_log_alphas_enet, coef_e, linestyle='--', c=c)
+    print(coef_l)  # neg_log_alphas_lasso
+    l1 = plt.plot( coef_l, c=c)  # neg_log_alphas_lasso,
+    l2 = plt.plot( coef_e, linestyle='--', c=c) # neg_log_alphas_enet,
 
-plt.xlabel('-Log(alpha)')
+plt.xlabel('坐标下降步数') # -Log(alpha)
 plt.ylabel('权值')
 # plt.title('Lasso and Elastic-Net Paths')
 # plt.legend((l1[-1]), ('Lasso')) # , loc='lower left'
-# plt.legend((l1[-1], l2[-1]), ('Lasso', 'Elastic-Net')) # , loc='lower left'
-plt.axis('tight')
-plt.savefig(r"data\save\elastic_lasso.png", dpi=320)
+plt.legend((l1[-1], l2[-1]), ('Lasso', 'Elastic-Net')) # , loc='lower left'
+# plt.axis('tight')
+plt.savefig(r"data\paper\elastic_lasso.png", dpi=250)
 plt.show()

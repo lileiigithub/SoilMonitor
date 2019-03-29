@@ -9,11 +9,10 @@ SRC_PATH = os.path.dirname(CUR_PATH)
 MONITOR_PATH = os.path.join(SRC_PATH, "monitor")
 sys.path.append(SRC_PATH)
 sys.path.append(MONITOR_PATH)
-for _path in sys.path:
-    print(_path)
-
-from src.monitor.dbscanClusterImg import Dbscan_cluster
-from src.monitor.soilMonitorLog import SMLog
+# for _path in sys.path:
+#     print(_path)
+from monitor.dbscanClusterImg import Dbscan_cluster
+from monitor.soilMonitorLog import SMLog
 
 import numpy as np
 np.set_printoptions(precision=2)
