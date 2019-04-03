@@ -10,10 +10,12 @@ range_hum = np.linspace(0.1,18.51,32)
 range_L = np.linspace(140.66,57.22,32)
 range_a = np.linspace(124.34,132.73,32)
 range_b = np.linspace(150.71,131.28,32)
-hum = range_hum+np.random.rand(32)*1.8
-L = range_L+np.random.rand(32)*4
+
+hum = range_hum+np.random.rand(32)
+L = range_L+np.random.rand(32)*3
 a = range_a+np.random.rand(32)*1
-b = range_b+np.random.rand(32)*2
+b = range_b+np.random.rand(32)*1.5
+
 # print(hum.shape)
 with open("sim_data.txt","w") as file:
     for i in range(len(L)):

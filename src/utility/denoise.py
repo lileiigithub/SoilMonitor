@@ -7,6 +7,8 @@ import cv2
 import numpy as np
 from numpy import random
 import matplotlib.pyplot as plt
+from skimage.util import random_noise
+from skimage import io
 import time
 time1 = time.time()
 
@@ -23,17 +25,17 @@ class Denoise(object):
     def averageFilter(self):
         img = self.img_arr
         blur = cv2.blur(img, (3, 3))
-        cv2.imwrite(self.img_folder+"_aver.jpg", blur)
+        cv2.imwrite(self.img_folder+"_filter_aver.jpg", blur)
 
     def medianFilter(self):
         img = self.img_arr
         median = cv2.medianBlur(img, 3)
-        cv2.imwrite(self.img_folder+"_mid.jpg", median)
+        cv2.imwrite(self.img_folder+"_filter_mid.jpg", median)
 
     def gaussianFilter(self):
         img = self.img_arr
         blur = cv2.GaussianBlur(img, (3, 3), 0)
-        cv2.imwrite(self.img_folder+"_gaus.jpg", blur)
+        cv2.imwrite(self.img_folder+"_filter_gaus.jpg", blur)
 
 
 ############class AddNoise##############
@@ -43,6 +45,7 @@ class AddNoise(object):
         self.img_shape = self.img_arr.shape
         self.img_width = self.img_shape[0]
         self.img_length = self.img_shape[1]
+        self.img_path = _img_path
         self.img_folder = _img_path[:-4]
 
     def addNoise(self):
@@ -66,26 +69,22 @@ class AddNoise(object):
                 SP_NoiseImg[randX, randY] = 0
             else:
                 SP_NoiseImg[randX, randY] = 255
-        cv2.imwrite(self.img_folder + "_salt_noise.jpg", SP_NoiseImg)
+        cv2.imwrite(self.img_folder + "_noise_salt.jpg", SP_NoiseImg)
 
-    def addGaussianNoise(self, percetage):
+    def addGaussianNoise(self):
         # 添加高斯噪声
         # #error
-        image = self.img_arr
-        G_Noiseimg = image
-        G_NoiseNum = int(percetage * image.shape[0] * image.shape[1])
-        for i in range(G_NoiseNum):
-            temp_x = np.random.randint(20, 40)
-            temp_y = np.random.randint(20, 40)
-            G_Noiseimg[temp_x][temp_y] = 255
-            cv2.imwrite(self.img_folder + "_gaus_noise.jpg", G_Noiseimg)
+        image = io.imread("data/denoise/1_noise_salt.jpg")
+        G_Noiseimg = random_noise(image,mode='gaussian',var=0.02)
+        io.imsave(self.img_folder + "_noise_salt_gauss.jpg", G_Noiseimg)
 
 if __name__ == '__main__':
-    # src_img_path = "data/denoise/1.jpg"
-    # an = AddNoise(src_img_path)
-    # an.addGaussianNoise(0.1)
+    src_img_path = "data/denoise/1.jpg"
+    an = AddNoise(src_img_path)
+    an.addSaltNoise(0.05)
+    an.addGaussianNoise()
 
-    src_img_path = "data/denoise/1_salt.jpg"
+    src_img_path = "data/denoise/1_noise_salt_gauss.jpg"
     dn = Denoise(src_img_path)
     dn.averageFilter()
     dn.medianFilter()

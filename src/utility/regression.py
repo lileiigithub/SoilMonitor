@@ -81,7 +81,7 @@ class HumidityRegression(object):
         plt.plot(self.predict_y, 'bo-') # self.test_x,
         plt.legend(["真实值","预测值"])
         # plt.plot(self.predict_y,self.hum,'b*-') # self.test_x,
-        # plt.savefig("data/paper/jiangsuPaper.jpg", frameon=True, dpi=250)  # , dpi=200
+        plt.savefig("data/paper/sim_high.jpg", frameon=True, dpi=250)  # , dpi=200
         plt.show()
 
     def save_model(self):
@@ -95,10 +95,12 @@ if __name__ == '__main__':
     PATH = "updata/weight_lab.csv"
     PATH1 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_lab_sim.csv"
     PATH2 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_lab.csv"
-    PATH3 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data.txt"
-    PATH4 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_gray.csv"
-    PATH5 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_gray_jiangshu.csv"
-    hr = HumidityRegression(PATH5)
+    PATH3 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_gray.csv"
+    PATH4 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_gray_jiangshu.csv"
+    PATH5 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data.txt"
+    PATH6 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data_low.txt"
+    PATH7 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data_high.txt"
+    hr = HumidityRegression(PATH7)
     hr.regression_model()
     # hr.save_model()
     # hr.test_saved_model()

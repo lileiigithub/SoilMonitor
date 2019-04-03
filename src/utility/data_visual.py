@@ -26,11 +26,22 @@ class VisualData(object):
         self.x = arr[:,1:]  # features
 
     def visual_data(self):
-        plt.plot(self.hum,self.x,"o-")
+        plt.plot(self.hum,self.x[:,0],"o-")
+        plt.plot(self.hum,self.x[:,1],"*-")
+        plt.plot(self.hum, self.x[:,2], "^-")
         plt.legend(["L值",'a 值','b 值'])  # 图例
         plt.xlabel("岩土湿度(%)")
         plt.ylabel("数值")
-        # plt.savefig(r"data\paper\lab_hum.png", dpi=250)
+        plt.savefig(r"data\paper\sim_lab_hum.png", dpi=250)
+        plt.show()
+
+    def visual_ab(self):
+        plt.plot(self.hum,self.x[:,1],"o-")
+        plt.plot(self.hum,self.x[:,2],"*-")
+        plt.legend(['a 值','b 值'])  # 图例
+        plt.xlabel("岩土湿度(%)")
+        plt.ylabel("数值")
+        plt.savefig(r"data\paper\sim_ab_hum.png", dpi=250)
         plt.show()
 
     def jiangsuPaper(self):
@@ -57,6 +68,8 @@ if __name__ == '__main__':
     file_path = r"updata\hum_lab_sim.csv"
     # PATH = r"I:\Projects\SoilMonitor\src\utility\updata\hum_gray_jiangshu.csv"
     PATH = r"I:\Projects\SoilMonitor\src\utility\updata\hum_lab.csv"
-    vs = VisualData(PATH)
-    vs.visual_data()
+    PATH1 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data.txt"
+    vs = VisualData(PATH1)
+    # vs.visual_data()
+    vs.visual_ab()
     # vs.jiangsuPaper()
