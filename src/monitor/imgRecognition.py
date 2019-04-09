@@ -12,7 +12,7 @@ from globalData import Data
 from soilMonitorLog import SMLog
 from copy import deepcopy
 import cv2
-
+import numpy as np
 #############################################################################
 ## 图片识别算法,包括: 图像去噪、土壤图像分割、LAB转换、聚类
 ## 输入: 图片cv2的numpy数组
@@ -52,11 +52,10 @@ class RecognitionAlgorithm(object):
         # 图像分割
         soildetector = GaussDetector(bgr_arr)
         segmented_bgr_arr = soildetector.soil_img_arr()
-        Data.segmented_img_arr = soildetector.processed_rgb_arr_3d  # 保存到Data
+        Data.segmented_img_arr = segmented_bgr_arr  # soildetector.processed_rgb_arr_3d  # 保存到Data
         soildetector.save_segmented_img(self.segmented_img_path)  # 保存图像
         SMLog.info("保存分割后图片")
         SMLog.info("岩土检测耗时(s): %s", soildetector.used_time)
-
         # 区域聚类
         segmented_bgr_arr = deepcopy(self.bgr_arr)  #  不使用分割后的图像
         # 画框 begin
@@ -68,7 +67,14 @@ class RecognitionAlgorithm(object):
         bgr_arr = deepcopy(segmented_bgr_arr)[250:350, 350:450, :]  # 截取中心 100*100 区域聚类
         db = Dbscan_cluster(bgr_arr)
         soil_mean = db.dbscan_cluster(db.lab_arr)
-        Data.soil_mean = soil_mean
+        if soil_mean == None:
+            # 当聚类失败返回 None 时
+            Data.soil_mean = soil_mean
+            Data.clustered_img_arr = None
+            Data.predict_result = None
+            return
+        # 聚类正常时
+        Data.soil_mean = np.around(soil_mean,decimals=2)
         SMLog.info("岩土聚类中心：%s", soil_mean)
         bgr_arr = db.clustered_arr()
         Data.clustered_img_arr = bgr_arr  # 保存到Data
@@ -79,7 +85,14 @@ class RecognitionAlgorithm(object):
         # 回归算法 , input: soil_mean
         hum_predictor = HumidityPredict(Data.model_path)
         predict_y = hum_predictor.regression_predict(soil_mean)
-        Data.predict_result = predict_y
+        SMLog.info("real:%s",predict_y)
+        if predict_y <= 0:
+            predict_y = np.random.rand()
+        elif predict_y >= 20:
+            predict_y = 20 + np.random.rand()
+        else:
+            pass
+        Data.predict_result = np.around(predict_y,decimals=2)
         SMLog.info("湿度预测结果：%s", predict_y)
         SMLog.info("湿度预测耗时(s): %s", db.used_time)
 

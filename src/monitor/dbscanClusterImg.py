@@ -48,6 +48,9 @@ class Dbscan_cluster(object):
         labels_count = collections.Counter(self.labels_no_noise)
         SMLog.info("聚类labels结果:%s", labels_count)
         # end
+        if len(labels_count)==0: #  聚类不成功，没有聚到一个类
+            SMLog.info("聚类失败")
+            return None
         self.soil_label = labels_count.most_common(1)[0][0]  # 找到标签最多的类
         SMLog.info("soil label:%s", self.soil_label)
         self.n_clusters_ = len(set(self.labels)) - (1 if -1 in self.labels else 0)

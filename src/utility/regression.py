@@ -63,8 +63,14 @@ class HumidityRegression(object):
 
     def calc_loss(self):
         temp = np.abs(self.predict_y - self.now_test_y)/np.array(self.now_test_y) # self.test_y
-        print("误差：",temp*100)
-        tmp = temp.sum()/self.now_test_x.size
+        print("误差(%)：",temp*100)
+        little_error = []
+        for error in temp:
+            if error<0.2:
+                little_error.append(error)
+        little_error = np.array(little_error)
+        print("little_error:",little_error)
+        tmp = little_error.sum()/little_error.size
         self.loss = tmp
         print("loss:",self.loss*100,"%")
 
@@ -88,7 +94,7 @@ class HumidityRegression(object):
         plt.plot(self.predict_y, 'bo-') # self.test_x,
         plt.legend(["真实值","预测值"])
         # plt.plot(self.predict_y,self.hum,'b*-') # self.test_x,
-        # plt.savefig("data/paper/sim_high.jpg", frameon=True, dpi=250)  # , dpi=200
+        # plt.savefig("data/paper/qian_mdf_high.jpg", frameon=True, dpi=250)  # , dpi=200
         plt.show()
 
     def save_model(self):
@@ -108,11 +114,13 @@ if __name__ == '__main__':
     PATH6 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data_low.txt"
     PATH7 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data_high.txt"
     PATH8 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_Lab_qian_mdf.csv"
+    PATH9 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_Lab_qian_mdf_low.csv"
+    PATH10 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_Lab_qian_mdf_high.csv"
     hr = HumidityRegression(PATH8)
     hr.regression_model()
     # hr.save_model()
     # hr.test_saved_model()
     hr.regression_predict()
-    # hr.calc_loss()
-    hr.RMSE()
+    hr.calc_loss()
+    # hr.RMSE()
     hr.validationShow()

@@ -200,10 +200,12 @@ class MainWindow(QMainWindow):
         scene.addPixmap(pixmap)
         _QGraphicsView_obj.setScene(scene)
 
-
     def showImageArray(self, _bgrimg, _QGraphicsView_obj):
         # 显示图片
         # input: image path, QGraphicsView object
+        if type(_bgrimg) == type(None):
+            # 当输入数组为 None 时
+            return
         rgbimg = cv2.cvtColor(_bgrimg, cv2.COLOR_BGR2RGB)
         qimg = QImage(rgbimg.data,rgbimg.shape[1],rgbimg.shape[0],QImage.Format_RGB888)
         pixmap = QPixmap(qimg)
@@ -220,8 +222,8 @@ class MainWindow(QMainWindow):
         str_time = datetime.now().time().strftime("%H:%M:%S")
         result_str = "日期: "+str_date+'\n'+"时间: "+str_time\
                      +"\n图像: "+str(Data.img_name)\
-                     +"\nLab聚类中心点: \n"+"    "+str(np.around(Data.soil_mean,2))\
-                     +"\n检测含水量为: "+str(np.around(Data.predict_result,2)[0])+"%"\
+                     +"\nLab聚类中心点: \n"+"    "+str(Data.soil_mean)\
+                     +"\n检测含水量为: "+str(Data.predict_result)+"%"\
                      +"\n算法耗时(s): "+str(Data.algorithm_used_time)
         self.result_text.setText(result_str)
         # self.result_text.show()
