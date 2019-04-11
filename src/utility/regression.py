@@ -32,14 +32,15 @@ class HumidityRegression(object):
         self.test_y = []
 
         self.read_data(self.file)
-        self.now_test_x = self.x
-        self.now_test_y = self.hum
+        self.now_test_x = self.x #[22:]
+        self.now_test_y = self.hum #[22:]
+        # assert 0
 
     def read_data(self, _path):
         arr = np.genfromtxt(fname=_path, delimiter=",")
         self.hum = arr[:,0]  # hum
         self.x = arr[:,1:]  # features
-
+        print(self.hum)
     def regression_model(self):
         # self.reg = linear_model.Lasso(alpha=0.1)
         # self.reg = linear_model.LassoLars(alpha=.1)
