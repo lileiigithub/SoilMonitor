@@ -16,7 +16,7 @@ from soilMonitorLog import SMLog
 class ReceiceImg(Thread,QObject):
     isHandled = True # 是否已经处理接收到的图片
     # isReceived = False # 是否已经接收到图片
-    receivedSignal = pyqtSignal()
+    receivedSignal = pyqtSignal()  #  自定义信号
     def __init__(self):
         Thread.__init__(self) # 调用父类构造函数,不调用报错
         QObject.__init__(self)
@@ -27,6 +27,7 @@ class ReceiceImg(Thread,QObject):
             self.net = Network()
             self.net.create_connnect(address)
             SMLog.info("创建并连接网络!")
+            SMLog.info("连接IP,端口：%s",address)
 
     def run(self):
         # 接收图片
@@ -45,6 +46,7 @@ class ReceiceImg(Thread,QObject):
                         # self.conn
                 except Exception as e:
                     SMLog.error("在线检测多线程错误,错误原因:%s", e)
+                    break
 
         else:  # 离线检测
             while True:

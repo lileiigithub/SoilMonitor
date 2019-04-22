@@ -86,6 +86,7 @@ def network():
             except Exception as e:
                 connection.close()
                 print("网络接收出现异常,已关闭,异常原因: ", e)
+                break
 
 if __name__ == '__main__':
     TakePicture = False # 拍照标志　全局变量　
