@@ -18,6 +18,7 @@ class DenoiseDialog(QDialog):
         self.filter1 = QCheckBox("均值滤波")
         self.filter2 = QCheckBox("中值滤波")
         self.filter3 = QCheckBox("高斯低通滤波")
+        self.filter2.setChecked(True)
         self.filter1.setFont(QFont("Roman times", 20))
         self.filter2.setFont(QFont("Roman times", 20))
         self.filter3.setFont(QFont("Roman times", 20))

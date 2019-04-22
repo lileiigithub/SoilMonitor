@@ -32,7 +32,7 @@ class VisualData(object):
         plt.legend(["L值",'a 值','b 值'])  # 图例
         plt.xlabel("岩土湿度(%)")
         plt.ylabel("数值")
-        plt.savefig(r"data\paper\qian_hum_lab.png", dpi=250)
+        # plt.savefig(r"data\paper\qian_hum_lab.png", dpi=250)
         plt.show()
 
     def visual_ab(self):
@@ -41,7 +41,7 @@ class VisualData(object):
         plt.legend(['a 值','b 值'])  # 图例
         plt.xlabel("岩土湿度(%)")
         plt.ylabel("数值")
-        plt.savefig(r"data\paper\qian_hum_ab.png", dpi=250)
+        plt.savefig(r"data\paper\qian_hum_ab_1.png", dpi=250)
         plt.show()
 
     def jiangsuPaper(self):
@@ -70,7 +70,7 @@ if __name__ == '__main__':
     PATH = r"I:\Projects\SoilMonitor\src\utility\updata\hum_lab.csv"
     PATH1 = r"I:\Projects\SoilMonitor\src\utility\updata\sim_data.txt"
     PATH2 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_Lab_qian.csv"
-    PATH3 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_Lab_qian_mdf.csv"
+    PATH3 = r"I:\Projects\SoilMonitor\src\utility\updata\hum_Lab_qian_mdf_1.csv"
     vs = VisualData(PATH3)
     # vs.visual_data()
     vs.visual_ab()
